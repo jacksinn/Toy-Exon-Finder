@@ -32,8 +32,8 @@ fclose($fh);
 #print_r(getAllSignals($S));
 #print_r(getAllOrfs($S));
 #call TOYSCAN WHICH CALLS ALL THE OTHER FUNCTIONS
-RANDORF($S);
-#TOYSCAN_1($S, $t);
+#RANDORF($S);
+TOYSCAN_1($S, $t);
 
 
 ########################################################################
@@ -139,83 +139,91 @@ function orfsOverlap($rho1, $rho2){
 
 function RANDORF($S){
 	$omega = getAllOrfs($S);
-  echo "OLD OMEGA::\n";
-  print_r($omega);
-  $o1POS = 0; #for unsetting array
-  $o2POS = 0; #for unsetting array
-	foreach($omega as $o1){
+  #echo "OLD OMEGA::\n";
+  #print_r($omega);
+  $rho1POS = 0; #for unsetting array
+  $rho2POS = 0; #for unsetting array
+	foreach($omega as $rho1){
    // echo "O1::\n";
     //print_r($o1);
-		foreach($omega as $o2){
-			if(orfsOverlap($o1, $o2)){
+		foreach($omega as $rho2){
+			if(orfsOverlap($rho1, $rho2)){
 				if(rand(0, 100) < 50){
           //echo "LESS THAN 50\n";
           #echo $o1 . "\n";
 					#pop $o1 off of @ohm
-          unset($omega[$o1POS]);
+          unset($omega[$rho1POS]);
 				}else{
           //echo "MORE THAN 50\n";
           #echo $o2 . "\n";
 					#pop $o2 off of @ohm
-          unset($omega[$o2POS]);
+          unset($omega[$rho2POS]);
 				}
 			}
-      $o2POS++;
+      $rho2POS++;
 		}
-    $o1POS++;
+    $rho1POS++;
 	}
-  echo "NEW OMEGA\n";
-  print_r($omega);
+  #echo "NEW OMEGA\n";
+  #print_r($omega);
 	return $omega;
 }
-/*
-function orfGcDensity($rho, $S){
-	#@rho = ($_[0], $_[1], $_[2], $_[3]);
-	#$S = $_[4];
 
-	#$s1 = $rho[0];
-	#$b = $rho[1];
-	#$s2 = $rho[2];
-	#$e = $rho[3];
+function orfGcDensity($rho, $S){
+	$s1 = $rho[0];
+	$b  = $rho[1];
+	$s2 = $rho[2];
+	$e  = $rho[3];
 
 	$gc = 0;
 	$acgt = 0;
 
 	for($i = $b; $i <= $e; $i++){
 		$char = substr($S, $i, 1);
-		if($char == "G" || $char == "C"){
-			$gc = $gc +1;
-		}
+		if($char == "G" || $char == "C"){	$gc = $gc + 1;	}
 		if($char == "A" || $char == "C" || $char == "G" || $char == "T"){
 			$acgt = $acgt + 1;
 		}
 	}
 	$gcdensity = $gc / $acgt;
+  return $gcdensity;
 }
 
 function TOYSCAN_1($S, $t){
-	$S = $_[0];
-	$t = $_[1];
-
-	@ohm = getAllOrfs($S);
-
-	foreach $rho (@ohm){
+	$omega = getAllOrfs($S);
+  $rhoCount = 0;
+	foreach ($omega as $rho){
 		if (orfGcDensity($rho, $S) < $t){
-			#pop rho off of ohm
+			unset($omega[$rhoCount]);
 		}
+    $rhoCount++;
 	}
-	foreach $rho1 (@ohm){
-		foreach $rho2 (@ohm){
-			if(orfsOverlap($rho1, $rho2) == 1){
+
+  $rho1POS = 0; #for unsetting array
+  $rho2POS = 0; #for unsetting array
+	foreach($omega as $rho1){
+   // echo "O1::\n";
+    //print_r($o1);
+		foreach($omega as $rho2){
+			if(orfsOverlap($rho1, $rho2)){
 				if(orfGcDensity($rho1, $S) < orfGcDensity($rho2, $S)){
-					#pop rho1 off of ohm
+          //echo "LESS THAN 50\n";
+          #echo $o1 . "\n";
+					#pop $o1 off of @ohm
+          unset($omega[$rho1POS]);
 				}else{
-					#pop rho2 off of ohm
+          //echo "MORE THAN 50\n";
+          #echo $o2 . "\n";
+					#pop $o2 off of @ohm
+          unset($omega[$rho2POS]);
 				}
 			}
+      $rho2POS++;
 		}
+    $rho1POS++;
 	}
-	return @ohm;
+  echo "NEW OMEGA\n";
+  print_r($omega);
+	return $omega;
 }
- */
 ?>

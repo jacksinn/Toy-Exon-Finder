@@ -11,7 +11,6 @@
 #			perl hw2.pl contig.txt
 #			or /home/steven/./hw2.pl /home/steven/Documents/contig.pl
 ########################################################################
-
 #variable setup
 #echo $argv[1];
 $contigFile = $argv[1];
@@ -28,6 +27,7 @@ while(!feof($fh)){
 }
 #echo $S . "\n";
 fclose($fh);
+
 
 #print_r(getAllSignals($S));
 #print_r(getAllOrfs($S));
